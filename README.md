@@ -29,22 +29,7 @@ By the way I am open to new ideas, new projects, if you want to talk to me feel 
  
 ## &#x1f4c8; GitHub Stats
 
-<!-- ![Github Stats](https://github-readme-stats.vercel.app/api?username=ericoandre&show_icons=true&count_private=true&show_icons=true&include_all_commits=true&theme=gotham) -->
-
-<img src="https://github-readme-stats.vercel.app/api?username=ericoandre&show_icons=true&include_all_commits=true&count_private=true&theme=gotham&layout=compact" alt="GitHub Stats for MishManners" height="150">
-
-
+![Github Stats](https://github-readme-stats.vercel.app/api?username=ericoandre&show_icons=true&count_private=true&show_icons=true&include_all_commits=true&theme=gotham)
 ![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=ericoandre&hide=TeX&layout=compact&theme=gotham)
-
-
-
-
-
-
-
-
-
-
-
 
 ![ericoandre Eating away my contributions](https://github.com/ericoandre/ericoandre/blob/output/github-contribution-grid-snake.svg) 
