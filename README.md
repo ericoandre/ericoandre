@@ -1,3 +1,6 @@
+
+![snake gif](https://github.com/ericoandre/ericoandre/blob/output/github-contribution-grid-snake.gif)
+
 ### Hi there 👋
 
 Hello, my name is ***Erico Andre da Silva***, I am a person curious about new technologies and computer languages and you will find me occasionally learning a new language or risking something related lol. Here you will find some projects that are part of my continuous learning! 📘 📖 😄.
