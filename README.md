@@ -1,6 +1,3 @@
-
-![snake gif](https://github.com/ericoandre/ericoandre/blob/output/github-contribution-grid-snake.gif)
-
 ### Hi there 👋
 
 Hello, my name is ***Erico Andre da Silva***, I am a person curious about new technologies and computer languages and you will find me occasionally learning a new language or risking something related lol. Here you will find some projects that are part of my continuous learning! 📘 📖 😄.
@@ -42,4 +39,4 @@ By the way I am open to new ideas, new projects, if you want to talk to me feel 
 ![Github Stats](https://github-readme-stats.vercel.app/api?username=ericoandre&show_icons=true&count_private=true&show_icons=true&include_all_commits=true&theme=gotham)
 ![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=ericoandre&hide=TeX&layout=compact&theme=gotham)
 
-<!-- ![ericoandre Eating away my contributions](https://github.com/ericoandre/ericoandre/blob/output/github-contribution-grid-snake.svg)  -->
+![ericoandre Eating away my contributions](https://github.com/ericoandre/ericoandre/blob/output/github-contribution-grid-snake.svg) 
