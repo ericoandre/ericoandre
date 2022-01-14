@@ -101,6 +101,7 @@ conf_repositorio(){
         cp /etc/pacman.conf /etc/pacman.conf.bkp
         sed '/^#\[multilib\]/{s/^#//;n;s/^#//;n;s/^#//}' /etc/pacman.conf > /tmp/pacman
         mv /tmp/pacman /etc/pacman.conf
+        echo ILoveCandy >> /etc/pacman.conf
     fi
 }
 inst_base(){
