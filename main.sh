@@ -11,7 +11,7 @@ SWAP_SIZE=1024
 BOOT_SIZE=512
 ROOT_SIZE=0
 
-EXTRA_PKGS="virtualbox-guest-utils acpi acpid dbus p7zip p7zip-plugins unrar tar rsync ufw autofs exfat-utils networkmanager wpa_supplicant wpa_actiond dialog iw net-tools neofetch nano alsa-plugins alsa-utils alsa-firmware pulseaudio pulseaudio-alsa pavucontrol volumeicon"
+EXTRA_PKGS="virtualbox-guest-utils acpi acpid dbus p7zip unrar tar rsync ufw  exfat-utils networkmanager wpa_supplicant dialog iw net-tools neofetch nano alsa-plugins alsa-utils alsa-firmware pulseaudio pulseaudio-alsa pavucontrol volumeicon"
 
 ######## Variáveis auxiliares. NÃO DEVEM SER ALTERADAS
 BOOT_START=1
