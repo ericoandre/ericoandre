@@ -11,7 +11,7 @@ SWAP_SIZE=1024
 BOOT_SIZE=512
 ROOT_SIZE=0
 
-EXTRA_PKGS="virtualbox-guest-utils acpi acpid dbus p7zip unrar tar rsync ufw  exfat-utils networkmanager wpa_supplicant dialog iw net-tools neofetch nano alsa-plugins alsa-utils alsa-firmware pulseaudio pulseaudio-alsa pavucontrol volumeicon"
+EXTRA_PKGS="virtualbox-guest-utils exfat-utils iw net-tools neofetch"
 
 ######## Variáveis auxiliares. NÃO DEVEM SER ALTERADAS
 BOOT_START=1
@@ -81,9 +81,9 @@ conf_repositorio(){
 }
 
 inst_base(){
-  # KERNEL=$(dialog  --clear --radiolist "Selecione o Kernel" 15 30 4 "linux" "" ON "linux-lts" "" OFF "linux-hardened" "" OFF "linux-zen" "" OFF --stdout)
+  KERNEL=$(dialog  --clear --radiolist "Selecione o Kernel" 15 30 4 "linux" "" ON "linux-lts" "" OFF "linux-hardened" "" OFF "linux-zen" "" OFF --stdout)
   # pacstrap /mnt base bash nano vim-minimal vi linux-firmware cryptsetup e2fsprogs findutils gawk inetutils iproute2 jfsutils licenses linux-firmware logrotate lvm2 man-db man-pages mdadm pciutils procps-ng reiserfsprogs sysfsutils xfsprogs usbutils `echo $kernel`
-  pacstrap /mnt base base-devel linux linux-headers linux-firmware bash-completion ntfs-3g os-prober grub dhcpcd `echo $EXTRA_PKGS`
+  pacstrap /mnt base base-devel $KERNEL $KERNEL-headers $KERNEL-firmware bash-completion ntfs-3g os-prober grub dhcpcd networkmanager tar rsync nano acpi acpid dbus ufw alsa-plugins alsa-utils alsa-firmware `echo $EXTRA_PKGS`
   genfstab -U -p /mnt >> /mnt/etc/fstab
   echo "/swapfile             none    swap    defaults        0       0" >> /mnt/etc/fstab
   arch_chroot "systemctl enable NetworkManager && mkinitcpio -p $KERNEL"
@@ -115,94 +115,94 @@ pacman -Syy && pacman -S --noconfirm reflector dialog
 loadkeys br-abnt2
 timedatectl set-ntp true
 
-# HNAME=$(dialog  --clear --inputbox "Digite o nome do Computador" 10 25 --stdout)
+HNAME=$(dialog  --clear --inputbox "Digite o nome do Computador" 10 25 --stdout)
 
-# ZONE=$(dialog  --clear --menu "Select Sua country/zone." 20 35 15 $(cat /usr/share/zoneinfo/zone.tab | awk '{print $3}' | grep "/" | sed "s/\/.*//g" | sort -ud | sort | awk '{ printf "\0"$0"\0"  " . " }') --stdout)
-# SUBZONE=$(dialog  --clear --menu "Select Sua country/zone." 20 35 15 $(cat /usr/share/zoneinfo/zone.tab | awk '{print $3}' | grep "$ZONE/" | sed "s/$ZONE\///g" | sort -ud | sort | awk '{ printf "\0"$0"\0"  " . " }') --stdout)
+ZONE=$(dialog  --clear --menu "Select Sua country/zone." 20 35 15 $(cat /usr/share/zoneinfo/zone.tab | awk '{print $3}' | grep "/" | sed "s/\/.*//g" | sort -ud | sort | awk '{ printf "\0"$0"\0"  " . " }') --stdout)
+SUBZONE=$(dialog  --clear --menu "Select Sua country/zone." 20 35 15 $(cat /usr/share/zoneinfo/zone.tab | awk '{print $3}' | grep "$ZONE/" | sed "s/$ZONE\///g" | sort -ud | sort | awk '{ printf "\0"$0"\0"  " . " }') --stdout)
 
-# LANGUAGE=$(dialog  --clear --radiolist "Escolha idioma do sistema:" 15 30 4 $(cat /etc/locale.gen | grep -v "#  " | sed 's/#//g' | sed 's/ UTF-8//g' | grep .UTF-8 | sort | awk '{ print $0 "\"\"  OFF " }') --stdout)
-# CLOCK=$(dialog  --clear --radiolist "Configurcao do relojo" 10 30 4 "utc" "" ON "localtime" "" OFF --stdout)
+LANGUAGE=$(dialog  --clear --radiolist "Escolha idioma do sistema:" 15 30 4 $(cat /etc/locale.gen | grep -v "#  " | sed 's/#//g' | sed 's/ UTF-8//g' | grep .UTF-8 | sort | awk '{ print $0 "\"\"  OFF " }') --stdout)
+CLOCK=$(dialog  --clear --radiolist "Configurcao do relojo" 10 30 4 "utc" "" ON "localtime" "" OFF --stdout)
 
-# ROOT_PASSWD=$(dialog --clear --inputbox "Digite a senha de root" 10 25 --stdout)
+ROOT_PASSWD=$(dialog --clear --inputbox "Digite a senha de root" 10 25 --stdout)
 
-# USER=$(dialog  --clear --inputbox "Digite o nome do novo Usuario" 10 25 --stdout)
-# USER_PASSWD=$(dialog --clear --inputbox "Digite a senha  de $USER" 10 25 --stdout)
+USER=$(dialog  --clear --inputbox "Digite o nome do novo Usuario" 10 25 --stdout)
+USER_PASSWD=$(dialog --clear --inputbox "Digite a senha  de $USER" 10 25 --stdout)
 
 #### Particionamento
-# particionar_discos
-# monta_particoes
+particionar_discos
+monta_particoes
 
 #### Configuracao e Instalcao
-# conf_repositorio
+conf_repositorio
 inst_base
 inst_boot_load
 
-# #### Configuracao 
-# arch_chroot "loadkeys br-abnt2"
-# arch_chroot "timedatectl set-ntp true"
-# arch_chroot "sed -i 's/^#Color/Color\nILoveCandy' /etc/pacman.conf && sed -i '/multilib\]/,+1 s/^#//' /etc/pacman.conf"
-# arch_chroot "pacman -Sy"
+#### Configuracao 
+arch_chroot "loadkeys br-abnt2"
+arch_chroot "timedatectl set-ntp true"
+arch_chroot "sed -i 's/^#Color/Color\nILoveCandy' /etc/pacman.conf && sed -i '/multilib\]/,+1 s/^#//' /etc/pacman.conf"
+arch_chroot "pacman -Sy"
 
 
-# echo "setting hostname"
-# arch_chroot "echo $HNAME > /etc/hostname"
-# arch_chroot "echo -e '127.0.0.1    localhost.localdomain    localhost\n::1        localhost.localdomain    localhost\n127.0.1.1    $HNAME.localdomain    $HNAME' >> /etc/hosts"
+echo "setting hostname"
+arch_chroot "echo $HNAME > /etc/hostname"
+arch_chroot "echo -e '127.0.0.1    localhost.localdomain    localhost\n::1        localhost.localdomain    localhost\n127.0.1.1    $HNAME.localdomain    $HNAME' >> /etc/hosts"
 
-# echo "setting locale pt_BR.UTF-8 UTF-8"
-# arch_chroot "sed -i 's/^#'$LANGUAGE'/'$LANGUAGE/ /etc/locale.gen"
-# arch_chroot "echo -e LANG=$LANGUAGE\nLC_MESSAGES=$LANGUAGE > /etc/locale.conf"
-# arch_chroot "locale-gen"
-# arch_chroot "export LANG=$LANGUAGE"
+echo "setting locale pt_BR.UTF-8 UTF-8"
+arch_chroot "sed -i 's/^#'$LANGUAGE'/'$LANGUAGE/ /etc/locale.gen"
+arch_chroot "echo -e LANG=$LANGUAGE\nLC_MESSAGES=$LANGUAGE > /etc/locale.conf"
+arch_chroot "locale-gen"
+arch_chroot "export LANG=$LANGUAGE"
 
-# echo "Vconsole"
-# arch_chroot "echo -e KEYMAP=$KEYBOARD_LAYOUT\nFONT=lat0-16\nFONT_MAP= > /etc/vconsole.conf"
+echo "Vconsole"
+arch_chroot "echo -e KEYMAP=$KEYBOARD_LAYOUT\nFONT=lat0-16\nFONT_MAP= > /etc/vconsole.conf"
 
-# echo "Setting timezone"
-# arch_chroot "ln -s /usr/share/zoneinfo/$ZONE/$SUBZONE /etc/localtime"
+echo "Setting timezone"
+arch_chroot "ln -s /usr/share/zoneinfo/$ZONE/$SUBZONE /etc/localtime"
 
-# echo "Setting hw CLOCK"
-# arch_chroot "hwclock --systohc --$CLOCK"
+echo "Setting hw CLOCK"
+arch_chroot "hwclock --systohc --$CLOCK"
 
-# echo "root password"
-# arch_chroot "echo -e $ROOT_PASSWD'\n'$ROOT_PASSWD | passwd"
+echo "root password"
+arch_chroot "echo -e $ROOT_PASSWD'\n'$ROOT_PASSWD | passwd"
 
-# echo "criar usuario"
-# arch_chroot "useradd -m -g users -G adm,lp,wheel,power,audio,video -s /bin/bash $USER"
+echo "criar usuario"
+arch_chroot "useradd -m -g users -G adm,lp,wheel,power,audio,video -s /bin/bash $USER"
 
-# echo "Definir senha do usuário"
-# arch_chroot "echo -e $USER_PASSWD'\n'$USER_PASSWD | passwd `echo $USER`"
+echo "Definir senha do usuário"
+arch_chroot "echo -e $USER_PASSWD'\n'$USER_PASSWD | passwd `echo $USER`"
 
-# dialog --title "INTEFACE GRAFICA" --clear --yesno "Deseja Instalar Windows Manager ?" 10 30
-# if [[ $? -eq 0 ]]; then
-#   arch_chroot "pacman -S --noconfirm xf86-video-intel vulkan-intel lib32-vulkan-intel xf86-input-synaptics xorg xorg-xinit xorg-server xorg-twm xorg-xclock xorg-xinit xterm ttf-liberation xorg-fonts-100dpi xorg-fonts-75dpi ttf-dejavu"
-#   DM=$(dialog  --clear --menu "Selecione o Kernel" 15 30 4  1 "gnome" 2 "cinnamon" 3 "plasma" 4 "mate" 5 "Xfce" 6 "deepin" 7 "i3" --stdout)
-#   if [[ $DM -eq 1 ]]; then
-#     #arch_chroot "pacman -S --noconfirm gnome gnome-tweaks file-roller gdm"
-#     arch_chroot "pacman -S --noconfirm gdm gnome-shell gnome-backgrounds gnome-control-center gnome-screenshot gnome-system-monitor gnome-terminal gnome-tweak-tool nautilus gedit gnome-calculator gnome-disk-utility eog evince"
-#     arch_chroot "systemctl enable gdm.service"
-#   elif [[ $DM -eq 2 ]]; then
-#     arch_chroot "pacman -S --noconfirm cinnamon sakura gnome-disk-utility nemo-fileroller gdm"
-#     arch_chroot "systemctl enable gdm.service"
-#   elif [[ $DM -eq 3 ]]; then
-#     arch_chroot "pacman -S --noconfirm plasma file-roller sddm"
-#     arch_chroot "echo -e '[Theme]\nCurrent=breeze' >> /usr/lib/sddm/sddm.conf.d/default.conf"
-#     arch_chroot "systemctl enable sddm.service"
-#   elif [[ $DM -eq 4 ]]; then
-#     arch_chroot "pacman -S --noconfirm mate mate-extra gnome-disk-utility lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings"
-#     arch_chroot "systemctl enable lightdm.service"
-#   elif [[ $DM -eq 5 ]]; then
-#     arch_chroot "pacman -S --noconfirm xfce4 xfce4-goodies file-roller network-manager-applet lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings"
-#     arch_chroot "systemctl enable lightdm.service"
-#   elif [[ $DM -eq 6 ]]; then
-#     arch_chroot "pacman -S --noconfirm deepin deepin-extra ark gnome-disk-utility lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings"
-#     arch_chroot "systemctl enable lightdm.service"
-#   elif [[ $DM -eq 7 ]]; then
-#     arch_chroot "pacmanpacman -S --noconfirm --needed --asdeps lightdm lightdm-gtk-greeter i3 feh gnome-disk-utility lightdm-gtk-greeter-settings"
-#     arch_chroot "systemctl enable lightdm.service"
-#   fi
-#   arch_chroot "pacman -S --noconfirm mesa mesa-libgl lib32-mesa lib32-mesa-libgl vlc papirus-icon-theme faenza-icon-theme jre8-openjdk jre8-openjdk-headless tilix eog xdg-user-dirs-gtk firefox xpdf mousepad"
-# fi
+dialog --title "INTEFACE GRAFICA" --clear --yesno "Deseja Instalar Windows Manager ?" 10 30
+if [[ $? -eq 0 ]]; then
+  arch_chroot "pacman -S --noconfirm xf86-video-intel vulkan-intel lib32-vulkan-intel xf86-input-synaptics xorg xorg-xinit xorg-server xorg-twm xorg-xclock xorg-xinit xterm ttf-liberation xorg-fonts-100dpi xorg-fonts-75dpi ttf-dejavu"
+  DM=$(dialog  --clear --menu "Selecione o Kernel" 15 30 4  1 "gnome" 2 "cinnamon" 3 "plasma" 4 "mate" 5 "Xfce" 6 "deepin" 7 "i3" --stdout)
+  if [[ $DM -eq 1 ]]; then
+    #arch_chroot "pacman -S --noconfirm gnome gnome-tweaks file-roller gdm"
+    arch_chroot "pacman -S --noconfirm gdm gnome-shell gnome-backgrounds gnome-control-center gnome-screenshot gnome-system-monitor gnome-terminal gnome-tweak-tool nautilus gedit gnome-calculator gnome-disk-utility eog evince"
+    arch_chroot "systemctl enable gdm.service"
+  elif [[ $DM -eq 2 ]]; then
+    arch_chroot "pacman -S --noconfirm cinnamon sakura gnome-disk-utility nemo-fileroller gdm"
+    arch_chroot "systemctl enable gdm.service"
+  elif [[ $DM -eq 3 ]]; then
+    arch_chroot "pacman -S --noconfirm plasma file-roller sddm"
+    arch_chroot "echo -e '[Theme]\nCurrent=breeze' >> /usr/lib/sddm/sddm.conf.d/default.conf"
+    arch_chroot "systemctl enable sddm.service"
+  elif [[ $DM -eq 4 ]]; then
+    arch_chroot "pacman -S --noconfirm mate mate-extra gnome-disk-utility lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings"
+    arch_chroot "systemctl enable lightdm.service"
+  elif [[ $DM -eq 5 ]]; then
+    arch_chroot "pacman -S --noconfirm xfce4 xfce4-goodies file-roller network-manager-applet lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings"
+    arch_chroot "systemctl enable lightdm.service"
+  elif [[ $DM -eq 6 ]]; then
+    arch_chroot "pacman -S --noconfirm deepin deepin-extra ark gnome-disk-utility lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings"
+    arch_chroot "systemctl enable lightdm.service"
+  elif [[ $DM -eq 7 ]]; then
+    arch_chroot "pacmanpacman -S --noconfirm --needed --asdeps lightdm lightdm-gtk-greeter i3 feh gnome-disk-utility lightdm-gtk-greeter-settings"
+    arch_chroot "systemctl enable lightdm.service"
+  fi
+  arch_chroot "pacman -S --noconfirm mesa mesa-libgl lib32-mesa lib32-mesa-libgl vlc papirus-icon-theme faenza-icon-theme jre8-openjdk jre8-openjdk-headless tilix eog xdg-user-dirs-gtk firefox xpdf mousepad"
+fi
 
-# exit
-# umount -R /mnt
-# poweroff
+exit
+umount -R /mnt
+poweroff
