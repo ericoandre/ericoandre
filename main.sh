@@ -138,7 +138,7 @@ if [[ $? -eq 0 ]]; then
     arch_chroot "pacmanpacman -S --noconfirm --needed --asdeps lightdm lightdm-gtk-greeter i3 feh gnome-disk-utility lightdm-gtk-greeter-settings"
     arch_chroot "systemctl enable lightdm.service"
   fi
-  arch_chroot "pacman -S --noconfirm mesa mesa-libgl lib32-mesa lib32-mesa-libgl vlc papirus-icon-theme faenza-icon-theme jre8-openjdk jre8-openjdk-headless tilix eog xdg-user-dirs-gtk firefox xpdf mousepad"
+  arch_chroot "pacman -S --noconfirm mesa mesa-libgl vlc papirus-icon-theme faenza-icon-theme jre8-openjdk jre8-openjdk-headless tilix eog xdg-user-dirs-gtk firefox xpdf mousepad"
 fi
 }
 
@@ -208,6 +208,5 @@ arch_chroot "echo -e $USER_PASSWD'\n'$USER_PASSWD | passwd `echo $USER`"
 
 inst_intefacegrafica
 
-exit
 umount -R /mnt
 poweroff
