@@ -25,11 +25,11 @@ else
 fi
 
 ######## functions
-arch_chroot{
+arch_chroot() {
   arch-chroot /mnt /bin/bash -c "${1}"
 }
 
-Parted{
+Parted() {
   parted --script $HD "${1}"
 }
 
