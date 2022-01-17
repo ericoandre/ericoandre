@@ -75,9 +75,8 @@ conf_repositorio(){
   reflector --verbose --protocol http --protocol https --latest 20 --sort rate --save /etc/pacman.d/mirrorlist
   if [ "$(uname -m)" = "x86_64" ]; then
     sed -i '/multilib\]/,+1 s/^#//' /etc/pacman.conf
-    echo ILoveCandy >> /etc/pacman.conf
+    #echo ILoveCandy >> /etc/pacman.conf
   fi
-  pacman -Sy
 }
 
 inst_base(){
@@ -107,45 +106,12 @@ inst_boot_load(){
   cp /mnt/usr/share/locale/en@quot/LC_MESSAGES/grub.mo /mnt/boot/grub/locale/en.mo
   arch_chroot "grub-mkconfig -o /boot/grub/grub.cfg"
 }
-
-
-root_password() {
-    ROOT_PASSWD=$(dialog --title "Password" --clear --insecure --passwordbox "Digite a senha de root" 10 25 --stdout)
-    RE_ROOT_PASSWD=$(dialog --title "Password" --clear --insecure --passwordbox "Repita a senha de root" 10 25 --stdout)
-    if [[ "$ROOT_PASSWD" != "$RE_ROOT_PASSWD" ]]; then 
-        zenity --error --height=500 --width=450 --title="$title" --text "As senhas não coincidem. Tente novamente."
-        root_password
-    fi
-}
-
-user_password() {
-    USER_PASSWD=$(dialog --title "Password" --clear --insecure --passwordbox "Digite a senha  de $USER" 10 25 --stdout)
-    RE_USER_PASSWD=$(dialog --title "Password" --clear --insecure --passwordbox "Repita a senha  de $USER" 10 25 --stdout)
-    if [[ "$USER_PASSWD" != "$RE_USER_PASSWD" ]]; then 
-        zenity --error --height=500 --width=450 --title="$title" --text "As senhas não coincidem. Tente novamente."
-        user_password
-    fi
-}
-
 ######## Script
 
 pacman -Syy && pacman -S --noconfirm reflector dialog
 
 loadkeys br-abnt2
 timedatectl set-ntp true
-
-#### Particionamento
-particionar_discos
-monta_particoes
-
-#### Configuracao e Instalcao
-conf_repositorio
-inst_base
-inst_boot_load
-
-#### Configuracao 
-arch_chroot "loadkeys br-abnt2"
-arch_chroot "timedatectl set-ntp true"
 
 
 HNAME=$(dialog  --clear --inputbox "Digite o nome do Computador" 10 25 --stdout)
@@ -161,11 +127,25 @@ ROOT_PASSWD=$(dialog --clear --inputbox "Digite a senha de root" 10 25 --stdout)
 USER=$(dialog  --clear --inputbox "Digite o nome do novo Usuario" 10 25 --stdout)
 USER_PASSWD=$(dialog --clear --inputbox "Digite a senha  de $USER" 10 25 --stdout)
 
+
 KERNEL=$(dialog  --clear --radiolist "Selecione o Kernel" 15 30 4 "linux" "" ON "linux-lts" "" OFF "linux-hardened" "" OFF "linux-zen" "" OFF --stdout)
 
-#dialog --title "INTEFACE GRAFICA" --clear --yesno "Deseja Instalar Windows Manager ?" 10 30
-#DM=$(dialog  --clear --menu "Selecione o Kernel" 15 30 4  1 "terminal" 2 "gnome" 3 "cinnamon" 4 "plasma" 5 "mate" 6 "Xfce" 7 "deepin" 8 "i3" --stdout)
+#### Particionamento
+particionar_discos
+monta_particoes
 
+#### Configuracao e Instalcao
+conf_repositorio
+inst_base
+inst_boot_load
+
+#### Configuracao 
+arch_chroot "loadkeys br-abnt2"
+arch_chroot "timedatectl set-ntp true"
+
+
+#dialog --title "INTEFACE GRAFICA" --clear --yesno "Deseja Instalar Windows Manager ?" 10 30
+#
 
 echo "setting hostname"
 arch_chroot "echo $HNAME > /etc/hostname"
@@ -196,10 +176,10 @@ arch_chroot "useradd -m -g users -G adm,lp,wheel,power,audio,video -s /bin/bash 
 echo "Definir senha do usuário"
 arch_chroot "echo -e $USER_PASSWD'\n'$USER_PASSWD | passwd `echo $USER`"
 
-
 # starting desktop manager
-# if [[ $DM -ne 1 ]]; then
+# if [[ $(dialog  --clear --menu "Selecione o Kernel" 15 30 4  1 "terminal" 2 "GUI" 3  --stdout) -ne 1 ]]; then
 #   arch_chroot "pacman -S --noconfirm xf86-video-intel vulkan-intel lib32-vulkan-intel xf86-input-synaptics xorg xorg-xinit xorg-server xorg-twm xorg-xclock xorg-xinit xterm ttf-liberation xorg-fonts-100dpi xorg-fonts-75dpi ttf-dejavu"
+#   DM=$(dialog  --clear --menu "Selecione o Kernel" 15 30 4  2 "gnome" 3 "cinnamon" 4 "plasma" 5 "mate" 6 "Xfce" 7 "deepin" 8 "i3" --stdout)
 #   if [[ $DM -eq 2 ]]; then
 #     #arch_chroot "pacman -S --noconfirm gnome gnome-tweaks file-roller gdm"
 #     arch_chroot "pacman -S --noconfirm gdm gnome-shell gnome-backgrounds gnome-control-center gnome-screenshot gnome-system-monitor gnome-terminal gnome-tweak-tool nautilus gedit gnome-calculator gnome-disk-utility eog evince"
@@ -231,4 +211,3 @@ arch_chroot "echo -e $USER_PASSWD'\n'$USER_PASSWD | passwd `echo $USER`"
 # exit
 # umount -R /mnt
 # poweroff
-
