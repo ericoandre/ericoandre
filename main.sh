@@ -73,7 +73,7 @@ monta_particoes(){
 
 conf_repositorio(){
   reflector --verbose --protocol http --protocol https --latest 20 --sort rate --save /etc/pacman.d/mirrorlist
-  sed -i 's/^#Color/Color\nILoveCandy' /etc/pacman.conf
+  # sed -i 's/^#Color/Color\nILoveCandy' /etc/pacman.conf
   if [ "$(uname -m)" = "x86_64" ]; then
     sed -i '/multilib\]/,+1 s/^#//' /etc/pacman.conf
   fi
