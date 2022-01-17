@@ -80,8 +80,9 @@ conf_repositorio(){
 }
 
 inst_base(){
+  KERNEL=$(dialog  --clear --radiolist "Selecione o Kernel" 15 30 4 "linux" "" ON "linux-lts" "" OFF "linux-hardened" "" OFF "linux-zen" "" OFF --stdout)
   # pacstrap /mnt base bash nano vim-minimal vi linux-firmware cryptsetup e2fsprogs findutils gawk inetutils iproute2 jfsutils licenses linux-firmware logrotate lvm2 man-db man-pages mdadm pciutils procps-ng reiserfsprogs sysfsutils xfsprogs usbutils `echo $kernel`
-  pacstrap /mnt base base-devel linux linux-headers linux-firmware bash-completion ntfs-3g os-prober grub dhcpcd `echo $EXTRA_PKGS`
+  pacstrap /mnt base base-devel `echo $KERNEL` `echo $KERNEL`-headers `echo $KERNEL`-firmware bash-completion ntfs-3g os-prober grub dhcpcd `echo $EXTRA_PKGS`
   genfstab -U -p /mnt >> /mnt/etc/fstab
   echo "/swapfile             none    swap    defaults        0       0" >> /mnt/etc/fstab
   arch_chroot "systemctl enable NetworkManager && mkinitcpio -p $KERNEL"
@@ -112,7 +113,6 @@ pacman -Syy && pacman -S --noconfirm reflector dialog
 
 loadkeys br-abnt2
 timedatectl set-ntp true
-
 
 HNAME=$(dialog  --clear --inputbox "Digite o nome do Computador" 10 25 --stdout)
 
@@ -152,10 +152,10 @@ arch_chroot "locale-gen"
 arch_chroot "export LANG=$LANGUAGE"
 
 echo "Vconsole"
-arch_chroot "echo -e KEYMAP=$KEYBOARD_LAYOUT\nFONT=lat0–16\nFONT_MAP= > /etc/vconsole.conf"
+arch_chroot "echo -e KEYMAP=$KEYBOARD_LAYOUT\nFONT=lat0-16\nFONT_MAP= > /etc/vconsole.conf"
 
 echo "Setting timezone"
-arch_chroot "ln -s /usr/share/zoneinfo/${ZONE}/${SUBZONE} /etc/localtime"
+arch_chroot "ln -s /usr/share/zoneinfo/$ZONE/$SUBZONE /etc/localtime"
 
 echo "Setting hw CLOCK"
 arch_chroot "hwclock --systohc --$CLOCK"
