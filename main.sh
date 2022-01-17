@@ -26,7 +26,7 @@ fi
 
 ######## functions
 arch_chroot{
-  arch-chroot /mnt /bin/bash "${1}"
+  arch-chroot /mnt /bin/bash -c "${1}"
 }
 
 Parted{
@@ -130,6 +130,11 @@ USER_PASSWD=$(dialog --clear --inputbox "Digite a senha  de $USER" 10 25 --stdou
 
 KERNEL=$(dialog  --clear --radiolist "Selecione o Kernel" 15 30 4 "linux" "" ON "linux-lts" "" OFF "linux-hardened" "" OFF "linux-zen" "" OFF --stdout)
 
+
+#### Configuracao 
+arch_chroot "loadkeys br-abnt2"
+arch_chroot "timedatectl set-ntp true"
+
 #### Particionamento
 particionar_discos
 monta_particoes
@@ -139,13 +144,7 @@ conf_repositorio
 inst_base
 inst_boot_load
 
-#### Configuracao 
-arch_chroot "loadkeys br-abnt2"
-arch_chroot "timedatectl set-ntp true"
-
-
 #dialog --title "INTEFACE GRAFICA" --clear --yesno "Deseja Instalar Windows Manager ?" 10 30
-#
 
 echo "setting hostname"
 arch_chroot "echo $HNAME > /etc/hostname"
