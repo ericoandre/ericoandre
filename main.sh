@@ -81,7 +81,7 @@ conf_repositorio(){
 
 inst_base(){
   # pacstrap /mnt base bash nano vim-minimal vi linux-firmware cryptsetup e2fsprogs findutils gawk inetutils iproute2 jfsutils licenses linux-firmware logrotate lvm2 man-db man-pages mdadm pciutils procps-ng reiserfsprogs sysfsutils xfsprogs usbutils `echo $kernel`
-  pacstrap /mnt base base-devel ${KERNEL} ${KERNEL}-headers ${KERNEL}-firmware bash-completion ntfs-3g os-prober grub dhcpcd `echo $EXTRA_PKGS`
+  pacstrap /mnt base base-devel linux linux-headers linux-firmware bash-completion ntfs-3g os-prober grub dhcpcd `echo $EXTRA_PKGS`
   genfstab -U -p /mnt >> /mnt/etc/fstab
   echo "/swapfile             none    swap    defaults        0       0" >> /mnt/etc/fstab
   arch_chroot "systemctl enable NetworkManager && mkinitcpio -p $KERNEL"
@@ -127,14 +127,6 @@ ROOT_PASSWD=$(dialog --clear --inputbox "Digite a senha de root" 10 25 --stdout)
 USER=$(dialog  --clear --inputbox "Digite o nome do novo Usuario" 10 25 --stdout)
 USER_PASSWD=$(dialog --clear --inputbox "Digite a senha  de $USER" 10 25 --stdout)
 
-
-KERNEL=$(dialog  --clear --radiolist "Selecione o Kernel" 15 30 4 "linux" "" ON "linux-lts" "" OFF "linux-hardened" "" OFF "linux-zen" "" OFF --stdout)
-
-
-#### Configuracao 
-arch_chroot "loadkeys br-abnt2"
-arch_chroot "timedatectl set-ntp true"
-
 #### Particionamento
 particionar_discos
 monta_particoes
@@ -144,7 +136,9 @@ conf_repositorio
 inst_base
 inst_boot_load
 
-#dialog --title "INTEFACE GRAFICA" --clear --yesno "Deseja Instalar Windows Manager ?" 10 30
+#### Configuracao 
+arch_chroot "loadkeys br-abnt2"
+arch_chroot "timedatectl set-ntp true"
 
 echo "setting hostname"
 arch_chroot "echo $HNAME > /etc/hostname"
@@ -175,38 +169,37 @@ arch_chroot "useradd -m -g users -G adm,lp,wheel,power,audio,video -s /bin/bash 
 echo "Definir senha do usuário"
 arch_chroot "echo -e $USER_PASSWD'\n'$USER_PASSWD | passwd `echo $USER`"
 
-# starting desktop manager
-# if [[ $(dialog  --clear --menu "Selecione o Kernel" 15 30 4  1 "terminal" 2 "GUI" 3  --stdout) -ne 1 ]]; then
-#   arch_chroot "pacman -S --noconfirm xf86-video-intel vulkan-intel lib32-vulkan-intel xf86-input-synaptics xorg xorg-xinit xorg-server xorg-twm xorg-xclock xorg-xinit xterm ttf-liberation xorg-fonts-100dpi xorg-fonts-75dpi ttf-dejavu"
-#   DM=$(dialog  --clear --menu "Selecione o Kernel" 15 30 4  2 "gnome" 3 "cinnamon" 4 "plasma" 5 "mate" 6 "Xfce" 7 "deepin" 8 "i3" --stdout)
-#   if [[ $DM -eq 2 ]]; then
-#     #arch_chroot "pacman -S --noconfirm gnome gnome-tweaks file-roller gdm"
-#     arch_chroot "pacman -S --noconfirm gdm gnome-shell gnome-backgrounds gnome-control-center gnome-screenshot gnome-system-monitor gnome-terminal gnome-tweak-tool nautilus gedit gnome-calculator gnome-disk-utility eog evince"
-#     arch_chroot "systemctl enable gdm.service"
-#   elif [[ $DM -eq 3 ]]; then
-#     arch_chroot "pacman -S --noconfirm cinnamon sakura gnome-disk-utility nemo-fileroller gdm"
-#     arch_chroot "systemctl enable gdm.service"
-#   elif [[ $DM -eq 4 ]]; then
-#     arch_chroot "pacman -S --noconfirm plasma file-roller sddm"
-#     arch_chroot "echo -e '[Theme]\nCurrent=breeze' >> /usr/lib/sddm/sddm.conf.d/default.conf"
-#     arch_chroot "systemctl enable sddm.service"
-#   elif [[ $DM -eq 5 ]]; then   
-#     arch_chroot "pacman -S --noconfirm mate mate-extra gnome-disk-utility lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings"
-#     arch_chroot "systemctl enable lightdm.service"
-#   elif [[ $DM -eq 6 ]]; then
-#     arch_chroot "pacman -S --noconfirm xfce4 xfce4-goodies file-roller network-manager-applet lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings"
-#     arch_chroot "systemctl enable lightdm.service"
-#   elif [[ $DM -eq 7 ]]; then
-#     arch_chroot "pacman -S --noconfirm deepin deepin-extra ark gnome-disk-utility lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings"
-#     arch_chroot "systemctl enable lightdm.service"
-#   elif [[ $DM -eq 8 ]]; then
-#     arch_chroot "pacmanpacman -S --noconfirm --needed --asdeps lightdm lightdm-gtk-greeter i3 feh gnome-disk-utility lightdm-gtk-greeter-settings"
-#     arch_chroot "systemctl enable lightdm.service"
-#   fi
-#   APPS=$(dialog --clear --stdout --separate-output --checklist 'Escolha seu App' 0 0 0 "vlc" '' OFF "gimp" '' OFF "thunderbird" '' OFF "gedit" '' OFF "leafpad" '' OFF "filezilla" '' OFF "mousepad" '' OFF --stdout)
-#   arch_chroot "pacman -S --noconfirm mesa mesa-libgl lib32-mesa lib32-mesa-libgl papirus-icon-theme faenza-icon-theme jre8-openjdk jre8-openjdk-headless tilix eog xdg-user-dirs-gtk firefox xpdf $APPS"
-# fi
+dialog --title "INTEFACE GRAFICA" --clear --yesno "Deseja Instalar Windows Manager ?" 10 30
+if [[ $? -eq 0 ]]; then
+  arch_chroot "pacman -S --noconfirm xf86-video-intel vulkan-intel lib32-vulkan-intel xf86-input-synaptics xorg xorg-xinit xorg-server xorg-twm xorg-xclock xorg-xinit xterm ttf-liberation xorg-fonts-100dpi xorg-fonts-75dpi ttf-dejavu"
+  DM=$(dialog  --clear --menu "Selecione o Kernel" 15 30 4  1 "gnome" 2 "cinnamon" 3 "plasma" 4 "mate" 5 "Xfce" 6 "deepin" 7 "i3" --stdout)
+  if [[ $DM -eq 1 ]]; then
+    #arch_chroot "pacman -S --noconfirm gnome gnome-tweaks file-roller gdm"
+    arch_chroot "pacman -S --noconfirm gdm gnome-shell gnome-backgrounds gnome-control-center gnome-screenshot gnome-system-monitor gnome-terminal gnome-tweak-tool nautilus gedit gnome-calculator gnome-disk-utility eog evince"
+    arch_chroot "systemctl enable gdm.service"
+  elif [[ $DM -eq 2 ]]; then
+    arch_chroot "pacman -S --noconfirm cinnamon sakura gnome-disk-utility nemo-fileroller gdm"
+    arch_chroot "systemctl enable gdm.service"
+  elif [[ $DM -eq 3 ]]; then
+    arch_chroot "pacman -S --noconfirm plasma file-roller sddm"
+    arch_chroot "echo -e '[Theme]\nCurrent=breeze' >> /usr/lib/sddm/sddm.conf.d/default.conf"
+    arch_chroot "systemctl enable sddm.service"
+  elif [[ $DM -eq 4 ]]; then
+    arch_chroot "pacman -S --noconfirm mate mate-extra gnome-disk-utility lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings"
+    arch_chroot "systemctl enable lightdm.service"
+  elif [[ $DM -eq 5 ]]; then
+    arch_chroot "pacman -S --noconfirm xfce4 xfce4-goodies file-roller network-manager-applet lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings"
+    arch_chroot "systemctl enable lightdm.service"
+  elif [[ $DM -eq 6 ]]; then
+    arch_chroot "pacman -S --noconfirm deepin deepin-extra ark gnome-disk-utility lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings"
+    arch_chroot "systemctl enable lightdm.service"
+  elif [[ $DM -eq 7 ]]; then
+    arch_chroot "pacmanpacman -S --noconfirm --needed --asdeps lightdm lightdm-gtk-greeter i3 feh gnome-disk-utility lightdm-gtk-greeter-settings"
+    arch_chroot "systemctl enable lightdm.service"
+  fi
+  arch_chroot "pacman -S --noconfirm mesa mesa-libgl lib32-mesa lib32-mesa-libgl vlc papirus-icon-theme faenza-icon-theme jre8-openjdk jre8-openjdk-headless tilix eog xdg-user-dirs-gtk firefox xpdf mousepad"
+fi
 
-# exit
-# umount -R /mnt
-# poweroff
+exit
+umount -R /mnt
+poweroff
