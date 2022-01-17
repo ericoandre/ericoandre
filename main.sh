@@ -73,10 +73,11 @@ monta_particoes(){
 
 conf_repositorio(){
   reflector --verbose --protocol http --protocol https --latest 20 --sort rate --save /etc/pacman.d/mirrorlist
+  sed -i 's/^#Color/Color\nILoveCandy' /etc/pacman.conf
   if [ "$(uname -m)" = "x86_64" ]; then
     sed -i '/multilib\]/,+1 s/^#//' /etc/pacman.conf
-    #echo ILoveCandy >> /etc/pacman.conf
   fi
+  pacman -Sy
 }
 
 inst_base(){
@@ -139,14 +140,16 @@ inst_boot_load
 #### Configuracao 
 arch_chroot "loadkeys br-abnt2"
 arch_chroot "timedatectl set-ntp true"
+arch_chroot "sed -i 's/^#Color/Color\nILoveCandy' /etc/pacman.conf && sed -i '/multilib\]/,+1 s/^#//' /etc/pacman.conf"
+arch_chroot "pacman -Sy"
+
 
 echo "setting hostname"
 arch_chroot "echo $HNAME > /etc/hostname"
 arch_chroot "echo -e '127.0.0.1    localhost.localdomain    localhost\n::1        localhost.localdomain    localhost\n127.0.1.1    $HNAME.localdomain    $HNAME' >> /etc/hosts"
 
 echo "setting locale pt_BR.UTF-8 UTF-8"
-arch_chroot "sed 's/^#'$LANGUAGE'/'$LANGUAGE/ /etc/locale.gen > /tmp/locale"
-arch_chroot "mv /tmp/locale /etc/locale.gen"
+arch_chroot "sed -i 's/^#'$LANGUAGE'/'$LANGUAGE/ /etc/locale.gen"
 arch_chroot "echo -e LANG=$LANGUAGE\nLC_MESSAGES=$LANGUAGE > /etc/locale.conf"
 arch_chroot "locale-gen"
 arch_chroot "export LANG=$LANGUAGE"
@@ -201,5 +204,5 @@ if [[ $? -eq 0 ]]; then
 fi
 
 exit
-umount -R /mnt
-poweroff
+# umount -R /mnt
+# poweroff
