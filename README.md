@@ -29,7 +29,7 @@ By the way I am open to new ideas, new projects, if you want to talk to me feel 
 ![CSS3](https://img.shields.io/badge/-CSS3-1572B6?style=flat&logo=css3)
 ![sass](https://img.shields.io/badge/-sass-informational?style=flat&logo=sass&logoColor=white&color=CC6699)
 ![JavaScript](https://img.shields.io/badge/-JavaScript-black?style=flat&logo=javascript)
-![Typescript](https://img.shields.io/badge/-Typescript-informational?style=flat&logo=typescript&logoColor=white&color=3178C6)
+<!-- ![Typescript](https://img.shields.io/badge/-Typescript-informational?style=flat&logo=typescript&logoColor=white&color=3178C6) -->
 ![MySQL](https://img.shields.io/badge/-MySQL-4479A1?style=flat&logo=mysql&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/-PostgreSQL-0064a5?style=flat&logo=postgresql&logoColor=white)
 
