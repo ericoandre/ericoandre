@@ -44,9 +44,8 @@ By the way I am open to new ideas, new projects, if you want to talk to me feel 
 ![MySQL](https://img.shields.io/badge/Tools-MySQL-informational?style=flat&logo=MySQL&logoColor=white&color=4479A1)
 ![GitHub](https://img.shields.io/badge/Tools-GitHub-informational?style=flat&logo=GitHub&logoColor=white&color=F05032) -->
 
- 
+<!-- 
 ## &#x1f4c8; GitHub Stats
-
 
 <div align="center">
   <a href="https://github.com/ericoandre">
@@ -56,7 +55,7 @@ By the way I am open to new ideas, new projects, if you want to talk to me feel 
 </div>
 
 
-<!-- ![Github Stats](https://github-readme-stats.vercel.app/api?username=ericoandre&show_icons=true&count_private=true&show_icons=true&include_all_commits=true&theme=gotham)
+![Github Stats](https://github-readme-stats.vercel.app/api?username=ericoandre&show_icons=true&count_private=true&show_icons=true&include_all_commits=true&theme=gotham)
 ![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=ericoandre&hide=TeX&layout=compact&theme=gotham)
  -->
 ![ericoandre Eating away my contributions](https://github.com/ericoandre/ericoandre/blob/output/github-contribution-grid-snake.svg) 
